@@ -56,7 +56,7 @@ void vecMax_gpu(double* a, double* b, double* c, unsigned int M) {
 
 	const unsigned int numThreadsPerBlock = 512;
 	const unsigned int numBlocks = M/numThreadsPerBlock;
-	vecadd_kernel <<< numBlocks, numThreadsPerBlock >>> (a_d, b_d, c_d, M);
+	vecMax_kernel <<< numBlocks, numThreadsPerBlock >>> (a_d, b_d, c_d, M);
 
 
 
