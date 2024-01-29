@@ -5,8 +5,8 @@
 
 __global__ void vecMax_kernel(double* a, double* b, double* c, unsigned int M) {
 
-    int i = blockDim.a*blockIdx.a + threadIdx.a;
-	if(i < N) {
+    int i = blockDim.x*blockIdx.x + threadIdx.x;
+	if(i < M) {
 	    double aval = a[i];
         double bval = b[i];
         c[i] = (aval > bval)?aval:bval;
@@ -43,8 +43,8 @@ void vecMax_gpu(double* a, double* b, double* c, unsigned int M) {
     // Copy data to GPU
     startTime(&timer);
 
-	cudaMemcpy(a_d, x, M*sizeof(float), cudaMemcpyHostToDevice);
-	cudaMemcpy(b_d, y, M*sizeof(float), cudaMemcpyHostToDevice);
+	cudaMemcpy(a_d, a, M*sizeof(float), cudaMemcpyHostToDevice);
+	cudaMemcpy(b_d, b, M*sizeof(float), cudaMemcpyHostToDevice);
 
 
     cudaDeviceSynchronize();
@@ -54,7 +54,9 @@ void vecMax_gpu(double* a, double* b, double* c, unsigned int M) {
     // Call kernel
     startTime(&timer);
 
-	vecMax_kernel(
+	const unsigned int numThreadsPerBlock = 512;
+	const unsigned int numBlocks = M/numThreadsPerBlock;
+	vecadd_kernel <<< numBlocks, numThreadsPerBlock >>> (a_d, b_d, c_d, M);
 
 
 
