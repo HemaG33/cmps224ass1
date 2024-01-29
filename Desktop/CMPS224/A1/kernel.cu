@@ -28,10 +28,10 @@ void vecMax_gpu(double* a, double* b, double* c, unsigned int M) {
     // Allocate GPU memory
     startTime(&timer);
 
-	float *a_d, *b_d, *c_d;
-	cudaMalloc((void**) &a_d, M*sizeof(float));
-	cudaMalloc((void**) &b_d, M*sizeof(float));
-	cudaMalloc((void**) &c_d, M*sizeof(float));
+	double *a_d, *b_d, *c_d;
+	cudaMalloc((void**) &a_d, M*sizeof(double));
+	cudaMalloc((void**) &b_d, M*sizeof(double));
+	cudaMalloc((void**) &c_d, M*sizeof(double));
 
 
 
@@ -43,8 +43,8 @@ void vecMax_gpu(double* a, double* b, double* c, unsigned int M) {
     // Copy data to GPU
     startTime(&timer);
 
-	cudaMemcpy(a_d, a, M*sizeof(float), cudaMemcpyHostToDevice);
-	cudaMemcpy(b_d, b, M*sizeof(float), cudaMemcpyHostToDevice);
+	cudaMemcpy(a_d, a, M*sizeof(double), cudaMemcpyHostToDevice);
+	cudaMemcpy(b_d, b, M*sizeof(double), cudaMemcpyHostToDevice);
 
 
     cudaDeviceSynchronize();
@@ -68,7 +68,7 @@ void vecMax_gpu(double* a, double* b, double* c, unsigned int M) {
     // Copy data from GPU
     startTime(&timer);
 
-	cudaMemcpy(c, c_d, M*sizeof(float), cudaMemcpyDeviceToHost);
+	cudaMemcpy(c, c_d, M*sizeof(double), cudaMemcpyDeviceToHost);
 
 
     cudaDeviceSynchronize();
