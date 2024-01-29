@@ -5,7 +5,13 @@
 
 __global__ void vecMax_kernel(double* a, double* b, double* c, unsigned int M) {
 
-    // TODO
+    int i = blockDim.a*blockIdx.a + threadIdx.a;
+	if(i < N) {
+	    double aval = a[i];
+        double bval = b[i];
+        c[i] = (aval > bval)?aval:bval;
+	}
+
 
 
 
@@ -22,8 +28,10 @@ void vecMax_gpu(double* a, double* b, double* c, unsigned int M) {
     // Allocate GPU memory
     startTime(&timer);
 
-    // TODO
-
+	float *a_d, *b_d, *c_d;
+	cudaMalloc((void**) &a_d, M*sizeof(float));
+	cudaMalloc((void**) &b_d, M*sizeof(float));
+	cudaMalloc((void**) &c_d, M*sizeof(float));
 
 
 
@@ -35,8 +43,8 @@ void vecMax_gpu(double* a, double* b, double* c, unsigned int M) {
     // Copy data to GPU
     startTime(&timer);
 
-    // TODO
-
+	cudaMemcpy(a_d, x, M*sizeof(float), cudaMemcpyHostToDevice);
+	cudaMemcpy(b_d, y, M*sizeof(float), cudaMemcpyHostToDevice);
 
 
     cudaDeviceSynchronize();
@@ -46,7 +54,7 @@ void vecMax_gpu(double* a, double* b, double* c, unsigned int M) {
     // Call kernel
     startTime(&timer);
 
-    // TODO
+	vecMax_kernel(
 
 
 
@@ -58,7 +66,7 @@ void vecMax_gpu(double* a, double* b, double* c, unsigned int M) {
     // Copy data from GPU
     startTime(&timer);
 
-    // TODO
+	cudaMemcpy(c, c_d, M*sizeof(float), cudaMemcpyDeviceToHost);
 
 
     cudaDeviceSynchronize();
@@ -68,8 +76,9 @@ void vecMax_gpu(double* a, double* b, double* c, unsigned int M) {
     // Free GPU memory
     startTime(&timer);
 
-    // TODO
-
+    cudaFree(a_d);
+	cudaFree(b_d);
+	cudaFree(c_d);
 
 
     cudaDeviceSynchronize();
